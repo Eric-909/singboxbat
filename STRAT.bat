@@ -20,7 +20,7 @@ for %%F in (%subFolder%\*) do (
 )
 echo.
 
-set /p "choice=请输入你的选择 [默认:!defaultChoice!]: "
+set /p "choice=Choose your choice [Default:!defaultChoice!]: "
 if "!choice!"=="" set "choice=!defaultChoice!"
 for /f %%A in ("!choice!") do set "choice=%%A"
 set "choice=!choice: =!"
