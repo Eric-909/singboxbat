@@ -77,7 +77,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.REP_TOKEN }}
       with:
         tag_name: ${{ steps.get_latest_version.outputs.version }}
-        release_name: Release ${{ steps.get_latest_version.outputs.version }} Updated
+        release_name: Release ${{ steps.get_latest_version.outputs.version }} 
         body: This release includes the updated Sing-Box files.
         draft: false
         prerelease: false
@@ -87,7 +87,7 @@ jobs:
       if: steps.check_update.outputs.result != '01'
       run: |
         export LANG=en_US
-        zip -r -X sing-box-bat.zip . -x $GITHUB_WORKSPACE/core/log.txt -x .DS_Store -x readme.md -x $GITHUB_WORKSPACE/core/LICENSE -x ".git/*" -x ".github/*"
+        zip -r -X sing-box-bat.zip . -x $GITHUB_WORKSPACE/core/log.txt -x .DS_Store -x Readme.md -x $GITHUB_WORKSPACE/core/LICENSE -x ".git/*" -x ".github/*"
       shell: bash
 
     - name: Upload Release Asset

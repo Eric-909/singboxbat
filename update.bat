@@ -9,9 +9,7 @@ set "wgetPath=%scriptDir%core\wget.exe"
 set "urlFile=%scriptDir%sub.txt"
 
 set "timeoutSeconds=10"
-
 if not exist "!subFolder!" mkdir "!subFolder!"
-
 for /f "tokens=1,* delims==" %%a in (!urlFile!) do (
     if "%%a"=="NAME" (
         set "fileName=%%b"

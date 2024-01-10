@@ -19,6 +19,7 @@ for %%F in (%subFolder%\*) do (
     set "file[!counter!]=%%~dpnxF"
 )
 echo.
+
 set /p "choice=Enter Your Choice [Default:!defaultChoice!]: "
 if "!choice!"=="" set "choice=!defaultChoice!"
 for /f %%A in ("!choice!") do set "choice=%%A"
@@ -27,9 +28,9 @@ set "choice=!choice: =!"
 if !choice! geq 1 if !choice! leq !counter! (
     set "selectedFile=!file[%choice%]!"
     echo selected file: !selectedFile!
-
+    cd /d "%~dp0%core\"
     set "checkResult="
-    call set "checkCommand=core\sing-box.exe check -c "!selectedFile!" 2>&1"
+    call set "checkCommand=sing-box.exe check -c "!selectedFile!" 2>&1"
     for /f "delims=" %%i in ('!checkCommand!') do set "checkResult=%%i"
     if not "!checkResult!"=="" (
         echo "Check failed"
@@ -37,7 +38,7 @@ if !choice! geq 1 if !choice! leq !counter! (
         pause
     ) else (
         echo Requesting Administrator Privileges...
-        powershell -Command "& { Start-Process 'core\sing-box.exe' -ArgumentList 'run -c "!selectedFile!"' -Verb RunAs }"
+        powershell -Command "& { Start-Process 'sing-box.exe' -ArgumentList 'run -c "!selectedFile!"' -Verb RunAs }"
         start http://127.0.0.1:9090
         exit /b
     )
