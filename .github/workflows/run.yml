@@ -87,7 +87,7 @@ jobs:
       if: steps.check_update.outputs.result != '01'
       run: |
         export LANG=en_US
-        zip -r -X sing-box-bat.zip . -x log.txt -x .DS_Store -x readme.md -x LICENSE -x .git -x .github
+        zip -r -X sing-box-bat.zip . -x log.txt -x .DS_Store -x readme.md -x LICENSE -x \.*
       shell: bash
 
     - name: Upload Release Asset
