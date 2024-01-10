@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 set "scriptDir=%~dp0"
 
 set "subFolder=%scriptDir%sub"
-set "wgetPath=%scriptDir%wget.exe"
+set "wgetPath=%scriptDir%core\wget.exe"
 set "urlFile=%scriptDir%sub.txt"
 
 set "timeoutSeconds=10"
