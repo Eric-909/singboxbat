@@ -1,0 +1,6 @@
+[LINK1]
+NAME=sub1.json
+URL=
+[LINK2]
+NAME=sub2.json
+URL=

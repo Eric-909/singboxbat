@@ -1,0 +1,103 @@
+name: Update and Release Sing-Box
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:  
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get Latest Release Version
+      id: get_latest_version
+      run: |
+        latest_version=$(curl -s "https://api.github.com/repos/SagerNet/sing-box/releases/latest" | jq -r .tag_name)
+        echo "::set-output name=version::$latest_version"
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.REP_TOKEN }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Read Previous Version from Log
+      id: read_previous_version
+      run: |
+        if [ -f "log.txt" ]; then
+          previous_version=$(cat log.txt)
+        else
+          previous_version=""
+        fi
+        echo "::set-output name=previous_version::$previous_version"
+      shell: bash
+    - name: Check if Update is Needed
+      id: check_update
+      run: |
+        latest_version=${{ steps.get_latest_version.outputs.version }}
+        previous_version=${{ steps.read_previous_version.outputs.previous_version }}
+        if [ "$latest_version" = "$previous_version" ]; then
+          echo "No update needed. The latest version is already processed."
+          echo "::set-output name=result::01"
+        fi
+      shell: bash
+    - name: Download and Extract Sing-Box Release
+      if: steps.check_update.outputs.result != '01'
+      run: |
+        latest_version=${{ steps.get_latest_version.outputs.version }}
+        mkdir temp
+        cd temp
+        curl -LJO "https://github.com/SagerNet/sing-box/releases/download/$latest_version/sing-box-${latest_version#v}-windows-amd64.zip"
+        unzip -o "sing-box-${latest_version#v}-windows-amd64.zip" -d .
+        mv "sing-box-${latest_version#v}-windows-amd64"/* $GITHUB_WORKSPACE
+        rm -rf $GITHUB_WORKSPACE/temp
+        echo ${latest_version} > $GITHUB_WORKSPACE/log.txt
+      shell: bash
+
+    - name: Commit Changes
+      if: steps.check_update.outputs.result != '01' 
+      run: |
+        if [[ -n "$(git status --porcelain)" ]]; then
+          echo "Changes detected in the repository."
+          git config core.ignorecase false
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Updated at $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
+        else
+          echo "No changes detected in the repository."
+        fi
+
+    - name: Create Release
+      if: steps.check_update.outputs.result != '01' 
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.REP_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_latest_version.outputs.version }}
+        release_name: Release ${{ steps.get_latest_version.outputs.version }} Updated
+        body: This release includes the updated Sing-Box files.
+        draft: false
+        prerelease: false
+
+
+    - name: Zip Repository
+      if: steps.check_update.outputs.result != '01'
+      run: |
+        export LANG=en_US
+        zip -r -X sing-box-bat.zip . -x log.txt -x .DS_Store -x readme.md -x LICENSE -x .git -x .github
+      shell: bash
+
+    - name: Upload Release Asset
+      if: steps.check_update.outputs.result != '01'
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.REP_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./sing-box-bat.zip
+        asset_name: sing-box-bat.zip
+        asset_content_type: application/zip
