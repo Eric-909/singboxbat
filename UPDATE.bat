@@ -3,7 +3,6 @@ setlocal enabledelayedexpansion
 
 
 set "scriptDir=%~dp0"
-
 set "subFolder=%scriptDir%sub"
 set "wgetPath=%scriptDir%core\wget.exe"
 set "urlFile=%scriptDir%sub.txt"

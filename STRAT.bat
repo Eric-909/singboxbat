@@ -10,7 +10,7 @@ set "defaultChoice=1"
 
 color 0A
 echo.
-echo 请选择配置文件:
+echo Please choose your config profile:
 echo.
 
 for %%F in (%subFolder%\*) do (
