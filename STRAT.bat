@@ -10,7 +10,7 @@ set "defaultChoice=1"
 
 color 0A
 echo.
-echo Please Choose Config Profile:
+echo 请选择配置文件:
 echo.
 
 for %%F in (%subFolder%\*) do (
@@ -20,7 +20,7 @@ for %%F in (%subFolder%\*) do (
 )
 echo.
 
-set /p "choice=Enter Your Choice [Default:!defaultChoice!]: "
+set /p "choice=请输入你的选择 [默认:!defaultChoice!]: "
 if "!choice!"=="" set "choice=!defaultChoice!"
 for /f %%A in ("!choice!") do set "choice=%%A"
 set "choice=!choice: =!"
