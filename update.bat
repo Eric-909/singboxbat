@@ -6,7 +6,7 @@ set "scriptDir=%~dp0"
 
 set "subFolder=%scriptDir%sub"
 set "wgetPath=%scriptDir%wget.exe"
-set "urlFile=%scriptDir%SUB.txt"
+set "urlFile=%scriptDir%sub.txt"
 
 set "timeoutSeconds=10"
 

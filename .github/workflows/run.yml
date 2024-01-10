@@ -24,8 +24,8 @@ jobs:
     - name: Read Previous Version from Log
       id: read_previous_version
       run: |
-        if [ -f "log.txt" ]; then
-          previous_version=$(cat log.txt)
+        if [ -f "$GITHUB_WORKSPACE/core/log.txt" ]; then
+          previous_version=$(cat $GITHUB_WORKSPACE/core/log.txt)
         else
           previous_version=""
         fi
@@ -49,9 +49,9 @@ jobs:
         cd temp
         curl -LJO "https://github.com/SagerNet/sing-box/releases/download/$latest_version/sing-box-${latest_version#v}-windows-amd64.zip"
         unzip -o "sing-box-${latest_version#v}-windows-amd64.zip" -d .
-        mv "sing-box-${latest_version#v}-windows-amd64"/* $GITHUB_WORKSPACE
+        mv "sing-box-${latest_version#v}-windows-amd64"/* $GITHUB_WORKSPACE/core
         rm -rf $GITHUB_WORKSPACE/temp
-        echo ${latest_version} > $GITHUB_WORKSPACE/log.txt
+        echo ${latest_version} > $GITHUB_WORKSPACE/core/log.txt
       shell: bash
 
     - name: Commit Changes
@@ -87,7 +87,7 @@ jobs:
       if: steps.check_update.outputs.result != '01'
       run: |
         export LANG=en_US
-        zip -r -X sing-box-bat.zip . -x log.txt -x .DS_Store -x readme.md -x LICENSE -x ".git/*" -x ".github/*"
+        zip -r -X sing-box-bat.zip . -x $GITHUB_WORKSPACE/core/log.txt -x .DS_Store -x readme.md -x $GITHUB_WORKSPACE/core/LICENSE -x ".git/*" -x ".github/*"
       shell: bash
 
     - name: Upload Release Asset

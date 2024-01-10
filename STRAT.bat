@@ -29,16 +29,16 @@ if !choice! geq 1 if !choice! leq !counter! (
     echo selected file: !selectedFile!
 
     set "checkResult="
-    call set "checkCommand=sing-box.exe check -c "!selectedFile!" 2>&1"
+    call set "checkCommand=core\sing-box.exe check -c "!selectedFile!" 2>&1"
     for /f "delims=" %%i in ('!checkCommand!') do set "checkResult=%%i"
-
     if not "!checkResult!"=="" (
         echo "Check failed"
         echo !checkResult!
         pause
     ) else (
         echo Requesting Administrator Privileges...
-        powershell -Command "& { Start-Process 'sing-box.exe' -ArgumentList 'run -c "!selectedFile!"' -Verb RunAs }"
+        powershell -Command "& { Start-Process 'core\sing-box.exe' -ArgumentList 'run -c "!selectedFile!"' -Verb RunAs }"
+        start http://127.0.0.1:9090
         exit /b
     )
     
